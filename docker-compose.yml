@@ -11,3 +11,8 @@ services:
       - DATA_DIR=/tmp/localstack/data
     volumes:
       - "./.localstack:/var/lib/localstack"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
