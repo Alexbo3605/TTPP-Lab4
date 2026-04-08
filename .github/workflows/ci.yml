@@ -21,10 +21,9 @@ jobs:
 
       - name: Start LocalStack with Docker Compose
         run: |
-          docker-compose up -d
+          docker compose up -d
           echo "Waiting for LocalStack to be ready..."
-          # Чекаємо, поки контейнер (назва з вашого docker-compose.yml) стане healthy
-          # Це набагато надійніше за простий sleep
+          
           timeout 60s sh -c 'until [ "$(docker inspect -f {{.State.Health.Status}} integration_aws_test)" == "healthy" ]; do sleep 2; done'
 
       - name: Install dependencies
@@ -46,4 +45,4 @@ jobs:
 
       - name: Teardown Docker
         if: always()
-        run: docker-compose down
+        run: docker compose down
