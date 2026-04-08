@@ -19,7 +19,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install docker-compose -y
       - name: Start LocalStack with Docker Compose
-        run: docker-compose up -d
+        run: |
+          docker-compose up -d
           sleep 15
       - name: Install dependencies
         run: |
