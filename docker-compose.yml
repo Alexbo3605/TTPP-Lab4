@@ -4,15 +4,17 @@ services:
     image: localstack/localstack:latest
     container_name: integration_aws_test
     ports:
-      - "4566:4566" # LocalStack Gateway
+      - "4566:4566"
     environment:
-      - SERVICES=dynamodb, sqs
+      - SERVICES=dynamodb,sqs # Прибрано зайвий пробіл після коми
       - DEBUG=1
-      - DATA_DIR=/tmp/localstack/data
+      # DATA_DIR застарів у нових версіях LocalStack, краще не використовувати
+      # якщо не потрібно зберігати стан між перезапусками
     volumes:
-      - "./.localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock" # Рекомендовано для LocalStack
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
+      # Використовуємо внутрішній ендпоінт здоров'я
+      test: ["CMD-SHELL", "curl -s localhost:4566/_localstack/health | grep -q '\"dynamodb\": \"available\"'"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10 # Збільшено кількість спроб для стабільності в CI
